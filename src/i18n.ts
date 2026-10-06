@@ -1,0 +1,71 @@
+import type { Category, ChangeKind, Locale } from './core/types';
+
+const zh = {
+  tagline: '改写保真校对器', local: '本地处理', headline: '文风可以改，事实改动必须看得见。',
+  intro: '比较原文与改写稿，找到需要你确认的事实与表达变化。',
+  exampleLabel: '试用案例', examplePlaceholder: '选择一个案例…', clear: '清空',
+  original: '原文', revised: '改写稿', import: '导入文件', importing: '读取中…',
+  originalPlaceholder: '粘贴需要保留事实的原文…', revisedPlaceholder: '粘贴润色或改写后的文本…',
+  inputHint: '支持 UTF-8 .txt / .md', characters: '字符', check: '检查改写', checking: '正在对齐句段并检查…',
+  shortcut: 'Ctrl / ⌘ + Enter', results: '校对结果', findings: '待核对变化', pending: '未确认',
+  reviewed: '已确认', alignment: '已对齐句段', all: '全部', onlyPending: '只看未确认',
+  before: '原文上下文', after: '改稿上下文', segment: '句段', noSegment: '无对应句段',
+  reviewedAction: '已确认这项变化', reviewAction: '我已核对这项变化',
+  exportJson: '导出 JSON', exportHtml: '导出 HTML',
+  emptyTitle: '让改写的变化一目了然', emptyDescription: '填入两份文本，或选择上方案例，再点击「检查改写」。',
+  noFindingsTitle: '这次没有规则命中', noFindingsDescription: '已完成检查。可导出报告，或在下方查看检查方法。',
+  noFilteredTitle: '当前筛选下没有变化', noFilteredDescription: '切换类别或关闭「只看未确认」，查看其他结果。',
+  reviewedAll: '所有变化均已逐项确认', reviewPrompt: '结合上下文核对每一项，再勾选确认。',
+  method: '检查方法与支持范围',
+  methodDescription: '使用本地确定性规则，对齐中英文句段，检查数字与常见数量单位、日期、否定与确定性词、链接及代码。内容变化和不明确的对齐会保留上下文，便于复核事实与所属对象。',
+  methodMeaning: '零条命中表示这些规则没有发现差异；句段对齐与规则覆盖范围会影响结果，语义判断由你结合上下文完成。',
+  privacy: '文本在本地处理，不自动保存；刷新页面会清空当前内容。',
+  charLimit: '每份文本最多 50,000 字符、300 个句段。',
+  emptyError: '请填入文本后再检查。', limitError: '文本超过字符上限，请缩短后再检查。',
+  fileTypeError: '请选择 .txt 或 .md 文本文件。', fileSizeError: '文件超过 200 KB，请分段导入。',
+  fileEncodingError: '无法以 UTF-8 读取文件，请将文件另存为 UTF-8 后再导入。',
+  fileEmptyError: '文件没有可检查的文本内容。', fileReadError: '文件读取失败，请重新选择文件。',
+  checkError: '检查未完成，请检查输入后重试。', exportError: '报告导出失败，请重试。',
+  updated: '输入已更新，请重新检查。', languageLabel: '界面语言', loadingTitle: '正在检查这两份文本',
+  footer: 'Meaning Lock · 让每一次改写都能被核对',
+};
+
+const en: Record<keyof typeof zh, string> = {
+  tagline: 'Rewrite fidelity checker', local: 'Processed locally', headline: 'Change the style. Keep factual changes visible.',
+  intro: 'Compare an original and a rewrite to review changes to facts and wording.',
+  exampleLabel: 'Try an example', examplePlaceholder: 'Choose an example…', clear: 'Clear',
+  original: 'Original', revised: 'Rewrite', import: 'Import file', importing: 'Reading…',
+  originalPlaceholder: 'Paste the original text with the facts to preserve…', revisedPlaceholder: 'Paste the edited or rewritten text…',
+  inputHint: 'UTF-8 .txt / .md', characters: 'characters', check: 'Check rewrite', checking: 'Aligning segments and checking…',
+  shortcut: 'Ctrl / ⌘ + Enter', results: 'Review results', findings: 'Changes to review', pending: 'Unreviewed',
+  reviewed: 'Reviewed', alignment: 'Aligned segments', all: 'All', onlyPending: 'Unreviewed only',
+  before: 'Original context', after: 'Rewrite context', segment: 'Segment', noSegment: 'No matching segment',
+  reviewedAction: 'I have reviewed this change', reviewAction: 'I have reviewed this change',
+  exportJson: 'Export JSON', exportHtml: 'Export HTML',
+  emptyTitle: 'See what changed in the rewrite', emptyDescription: 'Add both texts, or choose an example above, then select “Check rewrite”.',
+  noFindingsTitle: 'No rules matched changes', noFindingsDescription: 'The check is complete. Export the report or read the method below.',
+  noFilteredTitle: 'No changes in this view', noFilteredDescription: 'Choose another category or turn off “Unreviewed only” to see other results.',
+  reviewedAll: 'Every change has been reviewed', reviewPrompt: 'Review each change in context, then mark it as reviewed.',
+  method: 'Method and supported checks',
+  methodDescription: 'Local, deterministic rules align Chinese and English segments and check numbers, common quantity units, dates, negation and certainty terms, links, and code. Content changes and ambiguous matches retain their context so you can review which subjects the facts describe.',
+  methodMeaning: 'Zero findings means these rules found no differences. Alignment and rule coverage affect results; you make the final meaning judgment using the context.',
+  privacy: 'Text is processed locally and is not saved automatically. Refreshing clears the current content.',
+  charLimit: 'Up to 50,000 characters and 300 segments per text.',
+  emptyError: 'Add text before checking.', limitError: 'This text exceeds the character limit. Shorten it and try again.',
+  fileTypeError: 'Choose a .txt or .md text file.', fileSizeError: 'This file exceeds 200 KB. Import it in smaller sections.',
+  fileEncodingError: 'This file could not be read as UTF-8. Save it with UTF-8 encoding and import it again.',
+  fileEmptyError: 'This file has no text to check.', fileReadError: 'The file could not be read. Select it again.',
+  checkError: 'The check could not finish. Check the input and try again.', exportError: 'The report could not be exported. Try again.',
+  updated: 'The input changed. Run the check again.', languageLabel: 'Interface language', loadingTitle: 'Checking these two texts',
+  footer: 'Meaning Lock · Make every rewrite reviewable',
+};
+
+export const messages: Record<Locale, Record<keyof typeof zh, string>> = { zh, en };
+export const categoryLabels: Record<Locale, Record<Category, string>> = {
+  zh: { number: '数字与数量', date: '日期', qualifier: '否定与确定性', link: '链接', code: '代码', content: '内容变化', alignment: '对齐待复核' },
+  en: { number: 'Numbers & quantities', date: 'Dates', qualifier: 'Negation & certainty', link: 'Links', code: 'Code', content: 'Content changes', alignment: 'Alignment review' },
+};
+export const kindLabels: Record<Locale, Record<ChangeKind, string>> = {
+  zh: { changed: '有变化', added: '新增', removed: '删除', ambiguous: '待复核' },
+  en: { changed: 'Changed', added: 'Added', removed: 'Removed', ambiguous: 'Needs review' },
+};
