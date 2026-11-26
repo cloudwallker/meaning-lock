@@ -19,6 +19,8 @@ The aligned-segment count records confident matches. It helps interpret the repo
 | Numbers | `2.3亿元` → `23亿元` | The magnitude changed. |
 | Equivalent quantity | `2.3亿元` → `23000万元` | Both values normalize to the same amount. |
 | Percentage | `12.5%` → `15%` | The percentage changed. |
+| Percentage points | `2 percent` → `2 percentage points` | The unit of change differs. |
+| Basis points | `25 basis points` → `0.25 percentage points` | Both express the same absolute change in a rate. |
 | Currency | `20 USD` → `20 EUR` | The currency changed. |
 | Date | `2026年7月1日` → `2026-07-02` | The recognized date changed. |
 | Qualifier | `may launch` → `will launch` | Certainty or modality changed. |

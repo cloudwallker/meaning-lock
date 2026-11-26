@@ -47,7 +47,7 @@ function dateKey(raw: string): string {
 }
 
 const physicalPattern = /^(kilograms?|grams?|kilometers?|kilometres?|centimeters?|centimetres?|millimeters?|millimetres?|meters?|metres?|milliseconds?|minutes?|seconds?|hours?|kg|mg|km|cm|mm|ms|lbs?|g|m|s|h|千克|公斤|毫克|克|千米|公里|厘米|毫米|米|毫秒|分钟|小时|秒)(?![a-z])/i;
-const numberPattern = /(?:百分之\s*)?(?:US\$|CNY|USD|EUR|GBP|RMB|[$€£¥￥])?\s*[+−-]?(?:\d{1,3}(?:[,，]\d{3})+|\d+)(?:\.\d+)?(?:\s*(?:trillion|billion|million|thousand|百亿|千万|百万|十万|万亿|亿|万|千|百))?(?:\s*(?:百分比|percent(?:age)?|美元|人民币|元|欧元|英镑|USD|EUR|GBP|CNY|RMB|dollars?|euros?|pounds?|%|％|个|件|人|items?|people|users?|(?:kilograms?|grams?|kilometers?|kilometres?|centimeters?|centimetres?|millimeters?|millimetres?|meters?|metres?|milliseconds?|minutes?|seconds?|hours?|kg|mg|km|cm|mm|ms|lbs?|g|m|s|h)(?![a-z])|千克|公斤|毫克|克|千米|公里|厘米|毫米|米|毫秒|分钟|小时|秒))?/gi;
+const numberPattern = /(?:百分之\s*)?(?:US\$|CNY|USD|EUR|GBP|RMB|[$€£¥￥])?\s*[+−-]?(?:\d{1,3}(?:[,，]\d{3})+|\d+)(?:\.\d+)?(?:\s*(?:trillion|billion|million|thousand|百亿|千万|百万|十万|万亿|亿|万|千|百(?!分[点比])))?(?:\s*(?:(?:percentage|basis)\s+points?(?![a-z])|(?:个\s*)?(?:百分点|基点)|百分比|percent(?:age)?|美元|人民币|元|欧元|英镑|USD|EUR|GBP|CNY|RMB|dollars?|euros?|pounds?|%|％|个|件|人|items?|people|users?|(?:kilograms?|grams?|kilometers?|kilometres?|centimeters?|centimetres?|millimeters?|millimetres?|meters?|metres?|milliseconds?|minutes?|seconds?|hours?|kg|mg|km|cm|mm|ms|lbs?|g|m|s|h)(?![a-z])|千克|公斤|毫克|克|千米|公里|厘米|毫米|米|毫秒|分钟|小时|秒))?/gi;
 const magnitudeExponents: Record<string, number> = { 百: 2, 千: 3, 万: 4, 十万: 5, 百万: 6, 千万: 7, 亿: 8, 百亿: 10, 万亿: 12, thousand: 3, million: 6, billion: 9, trillion: 12 };
 
 function numberKey(raw: string): string {
@@ -57,11 +57,16 @@ function numberKey(raw: string): string {
   const suffix = lower.slice(matchedAmount.index! + amount.length);
   // 千克/千米 are complete physical units; their 千 is not an extra magnitude.
   const fullPhysical = suffix.trim().match(physicalPattern);
-  const magnitude = fullPhysical ? null : suffix.trim().match(/^(trillion|billion|million|thousand|万亿|百亿|千万|百万|十万|亿|万|千|百)/);
+  const magnitude = fullPhysical ? null : suffix.trim().match(/^(trillion|billion|million|thousand|万亿|百亿|千万|百万|十万|亿|万|千|百(?!分[点比]))/);
   const unitSuffix = magnitude ? suffix.trim().slice(magnitude[0].length).trim() : suffix.trim();
   let exponent = magnitude ? magnitudeExponents[magnitude[0]] : 0;
   let unit = 'number';
-  if (/百分之|%|％|percent/.test(lower)) { unit = 'ratio'; exponent -= 2; }
+  if (/^(?:basis\s+points?|(?:个\s*)?基点)$/.test(unitSuffix)) {
+    unit = 'percentage-point';
+    exponent -= 2;
+  } else if (/^(?:percentage\s+points?|(?:个\s*)?百分点)$/.test(unitSuffix)) {
+    unit = 'percentage-point';
+  } else if (/百分之|百分比|%|％|percent/.test(lower)) { unit = 'ratio'; exponent -= 2; }
   else if (/us\$|usd|美元|\$|dollars?/.test(lower)) unit = 'USD';
   else if (/eur|€|欧元|euros?/.test(lower)) unit = 'EUR';
   else if (/gbp|£|英镑|pounds?/.test(lower)) unit = 'GBP';
