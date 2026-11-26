@@ -4,7 +4,7 @@
 
 **Review factual changes before you accept a rewrite.**
 
-Meaning Lock compares an original with an edited version and brings changes to numbers, dates, certainty, links and code into one review desk. Text is checked locally in your browser, with a Chinese / English interface and exportable reports.
+Meaning Lock compares an original with an edited version and brings changes to numbers, dates, certainty, links and code into one review desk. Its number checks distinguish percentages from percentage-point changes. Text is checked locally in your browser, with a Chinese / English interface and exportable reports.
 
 **中文简介：** 本地运行的改写保真校对器，逐项复核数字、日期、限定词、链接与代码的变化，支持中英文界面和 HTML / JSON 报告。
 
@@ -15,6 +15,7 @@ Meaning Lock compares an original with an edited version and brings changes to n
 | Original | Rewrite | Review |
 |---|---|---|
 | Revenue was **about 2.3 billion**. | Revenue was **23 billion**. | Magnitude and approximation changed. |
+| The margin rose by **2 percent**. | The margin rose by **2 percentage points**. | The reported unit of change differs. |
 | The service **may** recover. | The service **will** recover. | Certainty changed. |
 | Send to `/v1/events` with `timeout: 30`. | Send to `/v2/events` with `timeout: 300`. | Code changed. |
 
@@ -45,6 +46,7 @@ The built site is in `dist/site`; the shared engine is in `dist/core.js`. Browse
 ## What you can review
 
 - Numbers and common quantity units, including Chinese 万 / 亿 and English thousand / million / billion; common equivalent quantities are normalized.
+- Percentage points and basis points in English or Chinese. For example, `25 basis points` and `0.25 percentage points` compare equally. Use the full unit names when checking a financial rewrite. Abbreviations such as `bps` can also describe network speed.
 - Dates, negation, certainty and approximation terms.
 - Markdown links, reference links, bare URLs, inline and fenced code.
 - Added or removed segments, changes to fact-bearing wording, and ambiguous alignment, including reordered sentences.

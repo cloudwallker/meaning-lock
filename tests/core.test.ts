@@ -15,6 +15,29 @@ describe('comparison rules', () => {
   it('keeps equivalent English magnitudes', () => expect(categories('Revenue was 2.3 billion dollars.', 'Revenue was 2300 million dollars.')).not.toContain('number'));
   it('handles grouping separators', () => expect(categories('Revenue was $1,250.50.', 'Revenue was $1250.50.')).not.toContain('number'));
   it('flags changed percentages', () => expect(categories('The rate is 12.5%.', 'The rate is 15%.')).toContain('number'));
+  it('reports a percentage rewritten as a percentage-point change with both units intact', () => {
+    const report = compareText('The margin rose by 2 percent.', 'The margin rose by 2 percentage points.');
+    expect(report.findings).toContainEqual(expect.objectContaining({
+      category: 'number', before: '2 percent', after: '2 percentage points',
+    }));
+  });
+  it.each([
+    ['25 basis points', '0.25 percentage point'],
+    ['-125 basis points', '-1.25 percentage points'],
+    ['100 个基点', '1 个百分点'],
+    ['1 基点', '0.01百分点'],
+    ['1 basis point', '0.01 个百分点'],
+    ['900719925474099301 basis points', '9007199254740993.01 percentage points'],
+  ])('compares equivalent point changes exactly: %s and %s', (before, after) => {
+    expect(compareText('Spread change: ' + before + '.', 'Spread change: ' + after + '.').findings).toEqual([]);
+  });
+  it.each([
+    ['25 basis points', '0.26 percentage points'],
+    ['升幅为1%', '升幅为1个百分点'],
+    ['链路带宽为100 bps', '链路带宽为1个百分点'],
+  ])('flags different or ambiguous units: %s and %s', (before, after) => {
+    expect(categories('Change: ' + before + '.', 'Change: ' + after + '.')).toContain('number');
+  });
   it('keeps equivalent Chinese percentages', () => expect(categories('成功率百分之12.5。', '成功率12.5%。')).not.toContain('number'));
   it('flags sign changes', () => expect(categories('增长率为-3%。', '增长率为3%。')).toContain('number'));
   it('does not confuse different currencies', () => expect(categories('Price is 20 USD.', 'Price is 20 EUR.')).toContain('number'));
